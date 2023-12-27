@@ -1530,12 +1530,12 @@ pub trait RpcApi: Sized {
     }
 
     /// Submits a chain lock if needed
-    fn submit_chainlock(
+    fn submit_chain_lock(
         &self,
-        chain_lock: ChainLock,
+        chain_lock: &ChainLock,
     ) -> Result<bool> {
         let mut args =
-            [into_json(hex::encode(chain_lock.block_hash))?, into_json(hex::encode(chain_lock.signature))?, into_json(chain_lock.block_height)?];
+            [into_json(hex::encode(chain_lock.block_hash))?, into_json(hex::encode(chain_lock.signature.as_bytes()))?, into_json(chain_lock.block_height)?];
         self.call::<bool>("submitchainlock", handle_defaults(&mut args, &[null()]))
     }
 
