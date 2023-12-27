@@ -32,8 +32,10 @@ use hex::ToHex;
 use dashcore_rpc_json::dashcore::{BlockHash, ChainLock};
 use dashcore_rpc_json::{ProTxInfo, ProTxListType, QuorumType};
 use log::Level::{Debug, Trace, Warn};
+use dashcore_rpc_json::dashcore::bls_sig_utils::BLSSignature;
 
 use crate::error::*;
+use crate::Error::UnexpectedStructure;
 use crate::json;
 use crate::queryable;
 
@@ -390,8 +392,14 @@ pub trait RpcApi: Sized {
     }
 
     /// Returns information about the best chainlock.
-    fn get_best_chain_lock(&self) -> Result<json::GetBestChainLockResult> {
-        self.call("getbestchainlock", &[])
+    fn get_best_chain_lock(&self) -> Result<ChainLock> {
+        let json::GetBestChainLockResult { blockhash, height, signature, known_block: _ } = self.call("getbestchainlock", &[])?;
+
+        Ok(ChainLock {
+            block_height: height,
+            signature: BLSSignature::try_from(signature.as_slice()).map_err(|e| UnexpectedStructure(e.to_string()))?,
+            block_hash: blockhash,
+        })
     }
 
     /// Get block hash at a given height
@@ -413,7 +421,7 @@ pub trait RpcApi: Sized {
 
     fn get_raw_change_address(&self) -> Result<Address<NetworkUnchecked>> {
         let data: String = self.call("getrawchangeaddress", &[])?;
-        let address = Address::from_str(&data).map_err(|_e| Error::UnexpectedStructure)?;
+        let address = Address::from_str(&data).map_err(|_e| Error::UnexpectedStructure("change address given by core was not an address".to_string()))?;
 
         Ok(address)
     }
