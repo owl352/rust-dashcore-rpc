@@ -1538,13 +1538,17 @@ pub trait RpcApi: Sized {
     }
 
     /// Submits a chain lock if needed
+    /// This will return an error only if the chain lock signature is invalid
+    /// If the returned height is less than the given chain lock height this means that the chain lock was accepted but we did not yet have the block
+    /// If the returned height is equal to the chain lock height given this means that we are at the height of the chain lock
+    /// If the returned height is higher that the given chain lock this means that we ignored the chain lock because core had something better.
     fn submit_chain_lock(
         &self,
         chain_lock: &ChainLock,
-    ) -> Result<bool> {
+    ) -> Result<u32> {
         let mut args =
             [into_json(hex::encode(chain_lock.block_hash))?, into_json(hex::encode(chain_lock.signature.as_bytes()))?, into_json(chain_lock.block_height)?];
-        self.call::<bool>("submitchainlock", handle_defaults(&mut args, &[null()]))
+        self.call::<u32>("submitchainlock", handle_defaults(&mut args, &[null()]))
     }
 
     /// Tests  if a quorum signature is valid for an InstantSend Lock
