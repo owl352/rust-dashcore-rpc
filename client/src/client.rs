@@ -8,7 +8,7 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 //
 
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::fs::File;
 use std::iter::FromIterator;
 use std::path::PathBuf;
@@ -433,6 +433,16 @@ pub trait RpcApi: Sized {
     ) -> Result<Transaction> {
         let mut args = [into_json(txid)?, into_json(false)?, opt_into_json(block_hash)?];
         let hex: String = self.call("getrawtransaction", handle_defaults(&mut args, &[null()]))?;
+        let bytes: Vec<u8> = FromHex::from_hex(&hex)?;
+        Ok(dashcore::consensus::encode::deserialize(&bytes)?)
+    }
+
+    fn get_raw_transaction_multi(
+        &self,
+        transactions_by_block_hash: BTreeMap<&BlockHash, Vec<&dashcore::Txid>>,
+    ) -> Result<BTreeMap<dashcore::Txid, Transaction>> {
+        let mut args = [into_json(transactions_by_block_hash)?, into_json(false)?];
+        let hex: String = self.call("getrawtransactionmulti", handle_defaults(&mut args, &[null()]))?;
         let bytes: Vec<u8> = FromHex::from_hex(&hex)?;
         Ok(dashcore::consensus::encode::deserialize(&bytes)?)
     }
