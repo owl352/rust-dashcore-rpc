@@ -493,13 +493,27 @@ pub trait RpcApi: Sized {
     fn get_transaction_are_locked(
         &self,
         tx_ids: &Vec<dashcore::Txid>,
-    ) -> Result<Vec<json::GetTransactionLockedResult>> {
+    ) -> Result<Vec<Option<json::GetTransactionLockedResult>>> {
         let transaction_ids_json = tx_ids
             .into_iter()
             .map(|tx_id| Ok(into_json(tx_id)?))
             .collect::<Result<Vec<Value>>>()?;
         let args = [transaction_ids_json.into()];
-        self.call("gettransactionsarelocked", &args)
+        self.call("gettxchainlocks", &args)
+    }
+
+    /// Returns only Chainlocked or Unknown status if height is provided
+    fn get_asset_unlock_statuses(
+        &self,
+        indices: &[u64],
+        height: Option<u32>,
+    ) -> Result<Vec<json::AssetUnlockStatusResult>> {
+        let indices_json = indices
+            .into_iter()
+            .map(|index| Ok(into_json(index.to_string())?))
+            .collect::<Result<Vec<Value>>>()?;
+        let args = [indices_json.into(),  opt_into_json(height)?];
+        self.call("getassetunlockstatuses", &args)
     }
 
     fn list_transactions(
