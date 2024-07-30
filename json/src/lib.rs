@@ -537,9 +537,9 @@ pub struct GetRawTransactionResultVin {
     pub script_sig: Option<GetRawTransactionResultVinScriptSig>,
     #[serde(default, deserialize_with = "deserialize_hex_opt")]
     pub coinbase: Option<Vec<u8>>,
-    #[serde(with = "dashcore::amount::serde::as_btc::opt")]
+    #[serde(default, with = "dashcore::amount::serde::as_btc::opt")]
     pub value: Option<Amount>,
-    #[serde(rename = "valueSat")]
+    #[serde(default)]
     pub value_sat: Option<u32>,
     pub addresses: Option<Vec<String>>,
     pub sequence: u32,
