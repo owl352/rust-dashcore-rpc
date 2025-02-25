@@ -1389,16 +1389,9 @@ pub trait RpcApi: Sized {
 
     /// Returns a returns detailed information about a deterministic masternode
     fn get_protx_info(&self, protx_hash: &ProTxHash, block_hash: Option<&BlockHash>) -> Result<ProTxInfo> {
-        let mut args = Vec::new();
+        let mut args = ["info".into(), into_json(protx_hash)?, opt_into_json(block_hash)?];
 
-        args.push("info".into());
-        args.push(into_json(protx_hash)?);
-
-        if !block_hash.is_none() {
-            args.push(into_json(block_hash.unwrap())?)
-        }
-
-        self.call::<ProTxInfo>("protx", handle_defaults(&mut args, &[null()]))
+        self.call::<ProTxInfo>("protx", handle_defaults(&mut args, &[null(), null()]))
     }
 
     /// Returns a list of provider transactions
