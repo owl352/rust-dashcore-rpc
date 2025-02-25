@@ -1391,7 +1391,7 @@ pub trait RpcApi: Sized {
     fn get_protx_info(&self, protx_hash: &ProTxHash, block_hash: Option<&BlockHash>) -> Result<ProTxInfo> {
         let mut args = ["info".into(), into_json(protx_hash)?, opt_into_json(block_hash)?];
 
-        self.call::<ProTxInfo>("protx", handle_defaults(&mut args, &[null(), null()]))
+        self.call::<ProTxInfo>("protx", handle_defaults(&mut args, &[null()]))
     }
 
     /// Returns a list of provider transactions
