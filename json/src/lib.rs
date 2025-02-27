@@ -3007,7 +3007,7 @@ pub struct MetaInfo {
 #[serde(rename_all = "camelCase")]
 pub struct ProTxInfo {
     #[serde(rename = "type")]
-    mn_type: Option<String>,
+    pub mn_type: Option<String>,
     #[serde(rename = "proTxHash")]
     pub pro_tx_hash: ProTxHash,
     #[serde(with = "hex")]
