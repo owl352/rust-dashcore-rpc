@@ -472,7 +472,9 @@ pub trait RpcApi: Sized {
         txid: &dashcore::Txid,
         block_hash: Option<&BlockHash>,
     ) -> Result<json::GetRawTransactionResult> {
+        println!("aaa");
         let mut args = [into_json(txid)?, into_json(true)?, opt_into_json(block_hash)?];
+        println!("bbb");
         self.call("getrawtransaction", handle_defaults(&mut args, &[null()]))
     }
 
