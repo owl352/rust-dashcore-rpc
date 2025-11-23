@@ -38,9 +38,10 @@ use dashcore::consensus::encode;
 use dashcore::hashes::hex::Error::InvalidChar;
 use dashcore::hashes::sha256;
 use dashcore::{
-    bip158, bip32, Address, Amount, BlockHash, PrivateKey, ProTxHash, PublicKey, QuorumHash,
+    bip158, Address, Amount, BlockHash, PrivateKey, ProTxHash, PublicKey, QuorumHash,
     Script, ScriptBuf, SignedAmount, Transaction, TxMerkleNode, Txid,
 };
+use key_wallet::bip32;
 use hex::FromHexError;
 use serde::de::Error as SerdeError;
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};

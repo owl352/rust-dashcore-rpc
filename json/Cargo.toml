@@ -26,5 +26,6 @@ serde_repr = "0.1"
 hex = { version="0.4", features=["serde"]}
 
 dashcore = { git="https://github.com/dashpay/rust-dashcore.git", features=["std", "secp-recovery", "rand-std", "signer", "serde"], default-features = false, tag = "v0.40.0" }
+key-wallet = { git="https://github.com/dashpay/rust-dashcore.git", features=["serde"], tag = "v0.40.0" }
 
-bincode = { version = "2.0.0-rc.3", features = ["serde"] }
+bincode = { version = "=2.0.0-rc.3", features = ["serde"] }
